@@ -1,0 +1,536 @@
+#################################################
+复习规划 
+第一天 网络知识 (原理 配置)
+第二天 系统管理员技术
+第三天 服务
+第四天 脚本 运维 
+第五天 安全 监控 集群 
+第六天 项目相关 就业指导 
+第七天 小米 (企业应用)
+
+回答问题的方法 
+原理: 根据流程 
+概念性问题:  是什么 为什么 在哪用 什么时候用 怎么用  
+#################################################
+复习  笔记 
+1 无法通过后缀确定文件类型时 使用 file 文件名  命令 
+# file /etc/yum.repos.d/osp8.repo 
+/etc/yum.repos.d/osp8.repo: ASCII text
+
+2 推荐书目  《大型网站技术架构》
+
+3 LVS 调度算法 
+轮询(Round Robin)
+加权轮询(Weighted Round Robin)
+最少连接(Least Connections)
+加权最少连接( Weighted Least Connections )
+基于局部性的最少链接(Locality-Based Least Connections)
+带复制的基于局部性最少链接(Locality-Based Least Connections with Replication)
+目标地址散列(Destination Hashing)
+源地址散列(Source Hashing)
+最短的期望的延迟(Shortest Expected Delay Scheduling SED)
+最少队列调度(Never Queue Scheduling NQ)
+
+LVS 工作模式 
+full-nat
+nat 
+DR 
+tunnel
+
+4 cdn Content Delivery Network 内容分发网络 使用户总是能访问到离他最近的缓存节点  
+
+5 FQDN 完全限定域名 全称域名 (主机名.域名后缀)
+www.baidu.com
+域名
+baidu.com
+. 根域  
+com net org int mil edu gov(一级域) 
+baidu.com  (二级域)
+
+6 linux文件类型 
+普通文件 f/-(ls -l查看)
+目录     d
+字符设备文件 c
+块设备文件 b
+套接口文件 s  如我们开启MySQL服务后，在/var/lib/mysql/下生成的mysql.sock文件，关闭MySQL服务后，这个文件就消失了
+管道 p
+符号链接文件 l
+#################################################
+day1 3.10
+1 TCP/IP 
+网络--通信 
+ip地址: 32位二进制数/点分十进制(为了人类方便) 由网络位和主机位组成 
+子网掩码: 区分IP地址的网络位和主机位 将网络位全置1 主机位全置0  192.168.4.1/24 255.255.255.0
+网关: 路由器的IP地址 
+dns服务器地址: 实现名称解析的 
+#####
+2 IP地址的分类 
+A 0NNNNNNN  1-126 网络位不能全部是0  127是本地环回口
+B 10NNNNNN  128-191
+C 110NNNNN  191-223
+D 1110NNNN  224-239 (组播)
+E (保留科研)
+
+私有IP地址 
+10.0.0.0/8
+172.16.0.0-172.31.0.0/16
+192.168.0.0-192.168.255.0/24
+
+CIDR 无类域间路由 
+VLSM 可变长子网掩码 (子网划分) 
+#####
+3 window 相关命令
+查看地址信息 ipconfig  ipconfig /all(查看详细信息 包括mac地址以及DNS等)
+释放DHCP租约 ipconfig /release  (租期时间未到时 客户端主动释放租约)
+更新租约 ipconfig /renew
+查看DNS缓存 ipconfig /displaydns 
+清空DNS缓存 ipconfig /flushdns 
+跟踪路由 tracert www.tmooc.cn 
+#####
+4 16进制转换2进制
+每四位二进制数 转换成一个十六进制数 
+10101100 --ac
+bf--10111111
+#####
+5 带宽 bit/s  速率byte
+#####
+6 OSI七层参考模型 协议数据单源(PDU)
+物理层  比特(bit)
+数据链路层  帧
+网络层  包
+传输层  段
+会话层
+表示层
+应用层
+#####
+7 物理层 线缆
+双绞线 UTP(非屏蔽双绞线)/STP(屏蔽双绞线)
+线序 568B 白橙 橙 白绿 蓝 白蓝 绿 白棕 棕
+    568A 13 26 对调 
+同种设备使用交叉线 不同设备使用直通线 现在设备一般都支持自动反转 
+#####
+8 物理层设备 
+网卡接口 中继器  集线器HUB(共享网络 同一冲突域 同一广播域)收到信息后 向所有端口都发  
+以太网 工作方式 CSMD/CD 发送前先监听 边发边听 冲突退避  (载波侦听 多路访问 冲突检测)
+
+数据链路层 交换机 (划分冲突域 同一广播域 ) vlan 虚拟局域网 实现广播控制 
+vlan 是虚拟局域网 主要作用实现广播控制 在平面二层网络中 如果主机数目特别大 就要考虑使用vlan 如果是办公网络可以是基于部门创建vlan 在交换机上创建vlan 再将相应的端口划分到指定vlan中 为了实现不同交换机上的相同vlan可以通信 需要配置中继trunk 为了实现不同vlan之间的通信 需要配置三层交换  
+网络层 路由器 (划分冲突域 划分广播域)
+#####
+9 网络设备模拟器
+gns3 思科模拟器
+化为模拟器
+PT 模拟器 
+# enable password xxxx 明文密码
+# enable secret xxxx 加密密码 
+存储配置到nvram 非易失性内存 
+#####
+10 MAC地址 48位 6字节 
+前24位 OUI+ 后24位 厂商给设备的编号 
+OUI是IEEE分配的 
+
+数据链路层 两个子层  MAC子层 LLC 逻辑链路控制子层  
+以太网命名 100BASE-T 
+100  最大吞吐两是100Mbps
+BASE  基带传输  /BROADBAND 宽带(ADSL)  (和带宽没有关系  基带 介质中只能有一种信号传输  一种介质能传输多种信号 )
+T  双绞线(介质)
+
+Modem 猫 56Kbps 
+ISDN 综合业务数字网 144Kbps
+ADSL 512K 
+电力宽带 
+#####
+11 交换机工作原理 
+交换机的工作原理 交换机根据MAC地址表 转发数据帧  已开始MAC地址表是空的 当交换机收到了数据帧之后 根据源MAC地址 建立MAC地址与端口的对应关系表  如果MAC地址表中  没有目标MAC地址的记录 向除接收端口外的所有端口发送  方式FLOODING(洪泛)
+交换机的每个口都是不同的冲突域 但是同一个广播域 
+集线器的所有口都是一个冲突域
+#####
+12 三层协议 
+ARP 地址解析协议 将IP地址解析为MAC地址 <以广播的方式工作>
+ICMP (ping命令使用ICMP协议)
+#####
+13 远程开机开机命令 
+# ether-wake -i enp2s0 xx:xx:xx:xx:xx:xx    
+#####
+14 路由器 
+工作原理 根据路由表转发数据包 如果数据包的目的地  不在路由表中 数据包将会被丢弃
+路由表中存放 最优的路由---浮动路由 如果多条路由的优劣相同 那么就会都放到路由表中 可以实现负载均衡
+获得路由的方式 
+静态路由 ---缺省路由 ip route
+#####
+15 TCP/UDP 
+TCP 头部20字节 传输控制协议 面向连接的可靠的协议 
+UDP 头部8字节 用户数据报文协议 非面向链接的 不可靠的协议 
+SYN ACK&SYN ACK
+流量控制
+计时器
+重传计时器 控制数据丢失
+坚持计时器 防止0窗口锁死
+保活计时器 防止TCP连接之间长时间的空闲
+时间等待计时器 用于四次断开
+#####
+16 中继 trunk 不同交换机上的相同vlan通信要用中继
+trunk封装方式 
+802.1Q 4字节  内部封装 公
+ISL 30字节  外部封装 私
+交换机端口的配置模式  Trunk/Access/Dynamic desireble/Dynamic auto
+#####
+17 以太通道 端口捆绑 <几个物理口 捆绑成一个逻辑口 提供更大的带宽>
+#####
+18 DHCP 动态主机配置协议 自动为客户端分配网络参数 <IP 掩码 网关 DNS>
+#####
+19 三层交换技术 
+2个表:
+转发信息库(FIB) 对应三层信息
+邻接关系表 对应二层 
+
+# ip routing  #打开三层交换机的路由功能 
+# no switchport  #将二层端口转变位三层端口(可以配ip)
+二层交换机配IP是为了远程管理 
+三层交换机配地址 (实现三层交换)
+#####
+20 路由
+<在一个规模比较小的网络中 不推荐用动态路由(路由表学习更新 占用资源)>
+动态路由协议 
+分类 
+按照算法分类 
+	距离矢量:  RIP IGRP EIGRP
+	链路状态:  OSPF IS-IS
+
+按照应用范围分类 
+内部网关协议:IGP (RIP OSPF IS-IS等协议)  (AS 自治系统)
+外部网关协议:EGP (BGP边界网关路由协议)
+RIP: 度量值是跳数 最大跳数是15跳  
+OSPF: 开放最短路径优先 
+5种包类型: 
+hello 包   
+dbd   数据库描述报文 
+LSR   链路状态请求
+LSU   链路状态更新 
+LSAck 链路状态确认 
+
+区域
+ 骨干区域是0 
+ 非骨干区域  必须直接与骨干区域相连
+
+路由器类型 
+ABR 区域边界路由器
+ASBR 自治系统边界路由器 
+骨干路由器
+内部路由器
+
+router-id 
+1 管理员通过命令配置 
+2 loopback端口ip地址 
+3 路由器上最小的ip地址 
+
+network 192.168.1.0 0.0.0.255 area0
+#####
+21 STP 生成树协议
+选举过程 
+1 选择根网桥 依据是BID最小 
+2 每个非根网桥 选择根端口 依据根路径成本最低 直连网桥ID最小 直连端口ID最小
+3 每个物理段 选择指定端口 依据同上 (根网桥上的所有端口 都是指定端口)
+4 根端口和指定端口处于转发状态 既不是根端口 也不是指定端口 则被阻塞 
+
+STP状态 阻塞状态/侦听/学习/转发 
+
+最大寿命 20S 从阻塞到侦听
+转发延迟 15s*2 从侦听到学习 从学习到转发 各需要15s
+最大网络收敛时间 50s
+#####
+22 ACL 访问控制列表
+标准: 1-99 只能检查源IP地址 应用在离目标最近的出口方向 
+扩展: 100-199 源和目标IP地址 以及协议和端口号 最好应用在离源最近的入口方向 
+命名: (分为标准和扩展)
+
+匹配规则 自上向下逐行匹配 一旦匹配 立即应用 不再检查其他规则 
+	  如果没有任何规则匹配 默认拒绝
+#####
+23 NAT 网络地址转换
+功能: 将一个网络地址转换成另一个网络地址 
+推荐书目 <TCP/IP路由技术> 第一卷 
+分类 
+	静态: 一对一
+	动态: 多对多
+	PAT: 端口多路复用 
+#################################################
+day 2 管理员技术
+#####
+1 安装系统 
+磁盘问题 
+MBR:  最大支持2.2T左右的磁盘 最多支持4个分区 <4主 3主一扩展>
+GPT:  <128个主分区>
+
+如何分区 
+/boot 200m
+swap分区 内存的1-2倍
+根分区 
+
+安装linux最少需要几个分区  1个 <swap可以取消 Ubuntu已经取消>
+想想服务器是做什么的 
+#####
+2 ext3/ext4: 适合小文件
+xfs: 适合大文件 
+根据存的文件选择文件系统 
+#####
+3 命令行提示符使用的环境变量是PS1
+# echo $PS1
+[\u@\h \W]\$
+#####
+4 查看内核版本 
+# uname -r
+#####
+5 主机名配置文件 /etc/hostname 
+# hostnamectl set-hostname vh01.tedu.cn  #设置主机名 或者修改配置文件 
+#####
+6 内部命令/外部命令 
+内部命令: 就像操作系统与生俱来的功能一样 没有任何文件对应 
+外部命令: 执行命令 就是执行那个命令文件 
+# enable  #列出所有内部命令
+# type <命令>  #判断是否为内部命令 
+#####
+7 命令的查找顺序 
+函数>别名>内建>外部 
+
+家目录下创建 ～/.vimrc 
+每次打开vim自动执行的命令  
+
+创建函数 
+# vim ~/.bashrc
+lh(){
+    ls -lh $*
+} 
+# source ~/.bashrc
+#####
+8 挂载 将硬盘等设备 与系统进行链接 可以通过访问挂载点的方式 管理设备内容 
+  创建挂载点 
+  挂载 shiyong
+#####
+9 zhangsan的家目录 相对路径表示方式 
+～zhangsan 
+#####
+10 通配符 
+什么时候用通配符 ls 
+什么时候用正则  sed grep awk
+通配符 
+*  任意多个字符 
+？ 任意单个字符 
+#####
+11mkdir 创建目录 
+选项
+-p 递归 
+-m 指定权限
+-v 创建过程
+# mkdir -pv -m 700 /tmp/a/b/c
+#####
+12 touch 创建空文件或更新时间戳 
+# stat /tmp/passwd  查看文件详细信息 
+#####
+13 ifconfig 查看网卡信息 
+网卡命名
+	en表示以太网 如果是无限局域网 用wl
+	第三个字母 o表示主板集成  s表示 slot插槽 p表示位置 某一位置链机的扩展卡上也可以有多个插槽  插槽编号从0开始 x表示 mac地址 
+#####
+14 软件包管理 
+yum源 
+国内开源镜像站点 
+mirrors.163.com 
+mirrors.aliyun.com
+
+EPEL 源 
+#####
+15 文件查找  
+find 
+选项 
+-name
+-type
+-user
+-size +5M 5M -5M 
+-mtime +3 3 -3 
+-exec
+# find /boot/ -name '*vmlinuz*' -exec cp {} /tmp/ \;
+#####
+16 locate 比find 查找更快 
+#####
+17 查找命令文件 which 
+#####
+18 重定向 > 覆盖 >>追加 
+< 输入重定向  
+#####
+19 端口号  记录服务和端口号的对应关系  /etc/services
+ftp 20/21
+ssh 22
+telnet 23 
+smtp 25
+dns 53(udp)
+tftp 69(udp)
+dhcp 67/68(udp)
+pop 110
+rpc 111
+ntp 123(udp)
+imap 143
+snmp 简单网络管理协议(161 162 udp)
+mysql 3306
+http 80
+https 443
+#####
+20 周期性计划任务 
+分 时 日 月 周 命令
+05 * * * * command 每个小时的05分执行
+05 10 * * * command 每天10:05 执行
+05 10 15 03 * command 每年3月15日10:05执行
+05 10 * * 1 command 每周一10:05执行
+*/5 10-18 * * 1,3,5 command 周一三五 从早10点到下午18点 每五分钟执行
+#####
+21 权限归属
+rwx 421 
+setfacl 
+chown 改变属主属组 
+suid 程序以属主的身份运行 (系统中的程序 运行期间具有身份)
+sgid 权限继承 
+sticky bit 用户只能删除自己的文件 (t权限) /tmp /var/tmp 目录  本身具有该权限
+#####
+22 SeLinux 安全机制  安全增强的Linux(Security Enhanced Linux)
+生产环境是否打开SeLinux?
+Docker 等环境不开 
+RHEL5 之前的系统叫AS Advanced Server 
+运行模式 enforcing disabled permissive 
+修改运行模式 setenforce 0|1(临时)  &  /etc/selinux/config(永久)
+
+设置selinux的运行状态为enforcing
+修改selinux安全上下文 环境值 相当于文件的锁 
+查看 # ls -Z  
+# sealert -b 
+# chcon -t admin_home_t /var/www/html/index.html  (可以修改为任意的标签值)
+# restorecon -v /var/www/html/index.html  (恢复文件的标签值 为所在目录的标签值)
+
+实验1
+# yum -y install vsftpd 
+# vim /etc/vsftpd/vsftpd.conf
+29	anon_upload_enable=YES  (打开注释 允许匿名账户上传 ) 
+真机安装lftp 上传文件进行测试 
+布尔值  功能开关  
+# chcon -t public_content_rw_t upload
+# setsebool -P allow_ftpd_anon_write on
+
+实验2
+修改httpd主配置文件 设置apache的监听端口为8050
+重启服务 发现服务无法正常启动
+解决方案  
+# semanage port -a -t http_port_t -p tcp 8050
+# systemctl restart httpd
+#####
+23 linux 工作方式 fork 
+管道操作会生成一个fork进程
+echo zhangsan | (read name ;echo $name)
+系统启动一个父进程  执行脚本时启动一个fork 子进程  执行结束后 子进程被杀死  ./xx.sh  
+/root/xx.sh 等方式执行脚本均属于fork
+source 不生成子进程 使用当前进程执行脚本 执行结束后 进程不会被杀死  source <脚本名称>
+#####
+24 IPv6 产生原因 IPv4 地址不够用 
+发展趋势  物联网 
+表示方式 
+	由128位2进制数组成 为了方便表示 每16位 换算成16进制数 共8段 用冒号分隔 叫做
+冒号分16进制
+2001::1  正确的表示方法 ::表示连续的0
+2001::1::2  错误的 ::双冒号只能出现一次 
+
+特殊的IPv6地址 
+::1  相当于IPv4的127.0.0.1 
+::    相当于IPv4的0.0.0.0
+#####
+25 网卡聚合
+bond和team类似 team是rhel7新增加的
+模式 轮询 主备  
+#####
+26 防火墙管理 iptables /firewalld
+防火墙状态 
+# firewall-cmd --state
+
+防火墙区域  (进入系统时的检查站)
+# firewall-cmd --get-zones
+trusted: 进入该区域的数据全部放行 
+block: 进入该区域的数据 默认全部拒绝 能接收到拒绝的回应
+drop: 进入该区域的数据 默认全部丢弃 接受不到拒绝的回应
+其他区域: 除明确允许外的 默认拒绝
+生产环境下 要拒绝访问 一般使用drop
+
+查看开放的区域 
+# firewall-cmd --get-active-zones
+
+开放区域: 决定数据包进入哪个区域 
+(1) 匹配源地址 
+[root@vh01 ~]# firewall-cmd --permanent --add-source=192.168.10.0/24 --zone=drop 
+(2) 匹配进入的网卡接口 
+[root@vh01 ~]# firewall-cmd --permanent --add-interface=eth1 --zone=work 
+(3) 进入默认区域 
+
+查看区域中的规则 
+[root@vh01 ~]# firewall-cmd --zone=public --list-all 
+
+允许进入默认区域的数据包访问http
+[root@vh01 ~]# firewall-cmd --permanent --add-service=http 
+
+允许进入默认区域的数据包访问3260端口
+[root@vh01 ~]# firewall-cmd --add-port=3260/tcp
+#####
+27 邮件  
+SMTP 简单邮件传输协议 25
+POP3 邮局协议 110  离线协议
+IMAP4 Internet邮件访问协议 143 在线协议 
+#####
+28 web服务 
+httpd  (b/s) browser/server
+web 服务器 
+
+网络定位原则  IP地址+协议+端口号(端到端)  IP实现点到点 
+虚拟主机 
+基于IP地址的虚拟主机 
+基于端口的虚拟主机 
+基于域名的虚拟主机 
+
+URL统一资源定位符: 协议+主机+端口+路径 
+http：//www.baidu.com/images
+
+https: 基于ssl 本质是一个证书  用于加密的秘钥 秘钥持有者信息 CA信息 
+
+WSGI动态网站  
+python web框架  django tornado flask 
+#####
+29 SAMBA共享 windows和linux 之间的共享 
+NFS实现的是UNIX-like系统之间的共享  (效率差一点）
+#####
+30 Bash Shell脚本  
+#####
+31 企业级虚拟化
+1 vmware: vsphere esxi 主机 
+2 红帽: RHEV 
+虚拟化中 称物理服务器为host宿主机  称虚机为guest 
+#####
+32 链接 
+软链接:(符号链接) 快捷方式 
+硬链接:多个文件名指向硬盘的同一储存位置 
+硬链接限制: 不能对目录做硬链接 不能跨分区做硬链接 (每一块硬盘上都有一个inode节点表)
+
+问题1  
+df-h 命令发现仍有许多空余空间 写入数据时 发现提示空间已被占满 
+原因  
+该分区的inode节点被用完了 
+df -i 查看i节点的使用状况   
+或者该分区已被删除的文件 仍然被其他进程调用 
+lsof的用法  
+lsof -i :22  查看22端口是否被占用 
+#####
+33 devel development(开发)
+#####
+34 推荐书目《Zabbix企业级分布式监控系统》 
+#####
+35 RAID 独立磁盘冗余阵列(廉价磁盘冗余阵列) 级别 构成 性能 容错 利用率
+RAID0: 条带卷 2块以上磁盘构成 性能最好 无容错 利用率 100%
+RAID1: 镜像卷 2块  性能无提升  性能没有提升 容错级别最高 50%
+RAID1E: 增强的RAID1 3块及以上 利用率50%  
+RAID5: 3块以上  RAID0和RAID1的折中 (螺旋式的写入数据与校验信息 ) 利用率  (n-1)/n
+RAID6: 6块以上  有两块硬盘空间 写校验 容错率高 允许坏2块盘 
+RAID10: 分为两组 组内形成RAID1 不同组之间形成RAID0 (性能和容错兼顾)
+RAID50: 
